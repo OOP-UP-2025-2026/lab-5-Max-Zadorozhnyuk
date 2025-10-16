@@ -21,9 +21,11 @@ public class MainFrame extends JFrame implements ActionListener {
         JButton rockButton = new JButton("Камінь");
         rockButton.addActionListener(this);
         rockButton.setActionCommand("rock");
+
         JButton paperButton = new JButton("Папір");
         paperButton.addActionListener(this);
         paperButton.setActionCommand("paper");
+
         JButton scissorsButton = new JButton("Ножиці");
         scissorsButton.addActionListener(this);
         scissorsButton.setActionCommand("scissors");
@@ -37,45 +39,53 @@ public class MainFrame extends JFrame implements ActionListener {
     }
 
     private GameShape generateShape() {
-
-        // TODO: написати логіку методу
-
-        // Метод повертає об'єкт ігрової фігури (камінь, ножиці чи папір)
-        // випадковим чином
-
+        // Метод повертає об'єкт ігрової фігури (камінь, ножиці чи папір) випадковим чином
         int random = new Random().nextInt(3);
 
-        return new GameShape(); // TODO: змініть на об'єкт потрібної фігури
+        switch (random) {
+            case 0:
+                return new Rock();
+            case 1:
+                return new Paper();
+            default:
+                return new Scissors();
+        }
     }
 
     private int checkWinner(GameShape player, GameShape computer) {
+        // Нічия
+        if (player.getClass() == computer.getClass()) {
+            return 0;
+        }
 
-        // Метод отримує клас фігури гравця і комп'ютера за допомогою оператора instanceof
-        // Метод повертає 1 якщо переміг гравець
-        // Метод повертає 0 якщо нічия (обидві фігури однакові)
-        // Метод повертає -1 якщо переміг комп'ютер
+        // Перемога гравця
+        if ((player instanceof Rock && computer instanceof Scissors) ||
+                (player instanceof Scissors && computer instanceof Paper) ||
+                (player instanceof Paper && computer instanceof Rock)) {
+            return 1;
+        }
 
-        // TODO: написати логіку методу
-
-        return 0;
+        // Інакше — перемога комп’ютера
+        return -1;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // Генерується ход комп'ютеру
+        // Генерується хід комп’ютера
         GameShape computerShape = generateShape();
 
-        GameShape playerShape = new GameShape();
-        // Визначаємо, на яку кнопку натиснув гравець
+        GameShape playerShape = null;
+
+        // Визначаємо, яку кнопку натиснув гравець
         switch (e.getActionCommand()) {
             case "rock":
-                // присвоїти playerShape об'єкт відповідного класу
+                playerShape = new Rock();
                 break;
             case "paper":
-                // присвоїти playerShape об'єкт відповідного класу
+                playerShape = new Paper();
                 break;
             case "scissors":
-                // присвоїти playerShape об'єкт відповідного класу
+                playerShape = new Scissors();
                 break;
         }
 
@@ -83,16 +93,19 @@ public class MainFrame extends JFrame implements ActionListener {
         int gameResult = checkWinner(playerShape, computerShape);
 
         // Сформувати повідомлення
-        String message = "Player shape: " + playerShape + ". Computer shape: " + computerShape + ". ";
+        String message = "Гравець: " + playerShape +
+                "\nКомп’ютер: " + computerShape + "\n";
+
         switch (gameResult) {
             case -1:
-                message += "Computer has won!";
+                message += "Переміг комп’ютер!";
                 break;
             case 0:
-                message += "It's a tie!";
+                message += "Нічия!";
                 break;
             case 1:
-                message += "Player has won!";
+                message += "Ви перемогли!";
+                break;
         }
 
         // Вивести діалогове вікно з повідомленням
